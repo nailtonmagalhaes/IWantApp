@@ -9,6 +9,7 @@ public class Product : Entity
     public decimal Price { get; private set; }
     public bool HasStock { get; private set; }
     public bool Active { get; private set; } = true;
+    public ICollection<Order> Orders { get; set; }
 
     public Product() { }
 

@@ -4,6 +4,7 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
@@ -17,7 +18,11 @@ public class ApplicationDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<Product>().Property(p => p.Description).HasMaxLength(255);
         modelBuilder.Entity<Product>().Property(p => p.Price).HasColumnType("decimal(10,2)").IsRequired();
 
-        modelBuilder.Entity<Category>().Property(p => p.Name).IsRequired();
+        modelBuilder.Entity<Category>().Property(c => c.Name).IsRequired();
+
+        modelBuilder.Entity<Order>().Property(o => o.ClientId).IsRequired();
+        modelBuilder.Entity<Order>().Property(o => o.DeliveryAddress).IsRequired();
+        modelBuilder.Entity<Order>().HasMany(o => o.Products).WithMany(p => p.Orders).UsingEntity(x => x.ToTable("OrderProducts"));
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)

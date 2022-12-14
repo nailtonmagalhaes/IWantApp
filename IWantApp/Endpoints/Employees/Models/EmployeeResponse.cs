@@ -1,3 +1,3 @@
-﻿namespace IWantApp.Endpoints.Employees;
+﻿namespace IWantApp.Endpoints.Employees.Models;
 
 public record EmployeeResponse(string Email, string Name);

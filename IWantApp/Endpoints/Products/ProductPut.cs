@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-namespace IWantApp.Endpoints.Products;
+﻿namespace IWantApp.Endpoints.Products;
 
 public class ProductPut
 {

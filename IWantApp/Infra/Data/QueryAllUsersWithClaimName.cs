@@ -16,7 +16,7 @@ public class QueryAllUsersWithClaimName
 SELECT    u.Email, c.ClaimValue AS Name
 FROM      AspNetUsers u
 LEFT JOIN AspNetUserClaims c ON u.Id = c.UserId AND c.ClaimType = 'Name'
-ORDER BY Name
-OFFSET (@page - 1) * @rows ROWS FETCH NEXT @rows ROWS ONLY", new { page, rows });
+ORDER BY  Name
+OFFSET    (@page - 1) * @rows ROWS FETCH NEXT @rows ROWS ONLY", new { page, rows });
     }
 }

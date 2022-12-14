@@ -6,27 +6,20 @@ public class EmployeePost
     public static string[] Methods => new string[] { HttpMethod.Post.ToString() };
     public static Delegate Handle => Action;
     [Authorize(Policy = "EmployeePolicy")]
-    public static async Task<IResult> Action(EmployeeRequest employeeRequest, HttpContext http, UserManager<IdentityUser> userManager)
+    public static async Task<IResult> Action(EmployeeRequest employeeRequest, HttpContext http, UserCreator userCreator)
     {
         var userId = http.User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
-        var newUser = new IdentityUser { UserName = employeeRequest.Email, Email = employeeRequest.Email };
-        var result = await userManager.CreateAsync(newUser, employeeRequest.Password);
-
-        if (!result.Succeeded)
-            return Results.BadRequest(result.Errors.ToProblemDetails());
-
         var userClaims = new List<Claim>()
         {
-            new Claim("EmployeeCode", employeeRequest.EmployeeCode),
-            new Claim("Name", employeeRequest.Name),
-            new Claim("CreatedBy", userId),
+            new Claim(EmployeeClaimTypes.EMPLOYEE_CODE, employeeRequest.EmployeeCode),
+            new Claim(EmployeeClaimTypes.NAME, employeeRequest.Name),
+            new Claim(EmployeeClaimTypes.CREATED_BY, userId),
         };
+        (IdentityResult identy, string userId) result = await userCreator.Create(employeeRequest.Email, employeeRequest.Password, userClaims);
 
-        var claimResult = await userManager.AddClaimsAsync(newUser, userClaims);
+        if (!result.identy.Succeeded)
+            return Results.BadRequest(result.identy.Errors.ToProblemDetails());
 
-        if (!claimResult.Succeeded)
-            return Results.BadRequest(claimResult.Errors.ToProblemDetails());
-
-        return Results.Created($"{Template}/{newUser.Id}", newUser.Id);
+        return Results.Created($"{Template}/{result.userId}", result.userId);
     }
 }
